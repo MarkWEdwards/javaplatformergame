@@ -5,11 +5,23 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 
+import com.MarkEdwards.framework.ObjectId;
+import com.MarkEdwards.objects.Text;
+import com.MarkEdwards.windows.Handler;
+
 public class Game extends Canvas implements Runnable
 {
 
     private boolean running = false;
     private Thread thread;
+
+    Handler handler;
+
+    private void init()
+    {
+        handler = new Handler();
+        handler.addObject(new Text(100, 100, ObjectId.Test));
+    }
 
     public synchronized void start()
     {
@@ -24,6 +36,8 @@ public class Game extends Canvas implements Runnable
     
     public void run()
     {
+        init();
+        this.requestFocus();
         long lastTime = System.nanoTime();
         double amountOfTicks = 60.0;
         double ns = 1000000000 / amountOfTicks;
@@ -58,7 +72,7 @@ public class Game extends Canvas implements Runnable
 
     private void tick()
     {
-
+        handler.tick();
     }
 
     private void render()
@@ -74,6 +88,8 @@ public class Game extends Canvas implements Runnable
         //Draw here
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, getWidth(), getHeight());
+
+        handler.render(g);
         //
         g.dispose();
         bs.show();
